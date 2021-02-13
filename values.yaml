@@ -1,0 +1,12 @@
+# See: https://github.com/pact-foundation/pact-stub-server
+image:
+  pullPolicy: IfNotPresent
+  repository: pactfoundation/pact-stub-server
+  tag: "v0.4.4"
+service:
+  logLevel: info
+  port: 7228
+source: {}
+  # Load Pact files from host directories (absolute paths).
+  # E.g. --set "source.hostDirectories[0]=/path/to/pact/files/directory"
+  # hostDirectories: []

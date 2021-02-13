@@ -1,0 +1,11 @@
+Pact stub server is available at: http://localhost:{{ .Values.service.port }}
+
+{{- if .Values.source.hostDirectories }}
+Pact file locations:
+{{- range $directory := .Values.source.hostDirectories }}
+  - {{ $directory }}
+{{- end }}
+{{- end }}
+
+To update the stubs, the server must be restarted. To stop the server, run:
+  $ helm uninstall {{ .Release.Name }}

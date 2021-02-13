@@ -1,0 +1,3 @@
+apiVersion: v2
+name: pact-stub-server
+version: 0.0.1

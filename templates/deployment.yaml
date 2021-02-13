@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: default
+  labels:
+    app: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+          {{- range $index, $directory := .Values.source.hostDirectories }}
+            - "-d=/pacts/{{ $index }}"
+          {{- end }}
+            - "-l={{ .Values.service.logLevel }}"
+            - "-p={{ .Values.service.port }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+        {{- if .Values.source.hostDirectories }}
+          volumeMounts:
+          {{- range $index, $directory := .Values.source.hostDirectories }}
+            - mountPath: "/pacts/{{ $index }}"
+              name: "pact-directory-{{ $index }}"
+          {{- end }}
+        {{- end }}
+    {{- if .Values.source.hostDirectories }}
+      volumes:
+      {{- range $index, $directory := .Values.source.hostDirectories }}
+        - name: "pact-directory-{{ $index }}"
+          hostPath:
+            path: {{ $directory }}
+            type: Directory
+      {{- end }}
+    {{- end }}
